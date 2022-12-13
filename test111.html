@@ -1,0 +1,104 @@
+<head>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/r/dt/dt-1.10.9/datatables.min.css">
+    <script type="text/javascript" src="https://cdn.datatables.net/r/dt/dt-1.10.9/datatables.min.js"></script>	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+	<link rel='stylesheet' href='/css/splide.min.css'>
+	<script src="https://kit.fontawesome.com/8b196c3d7f.js" crossorigin="anonymous"></script>
+	<link rel="icon" href="favicon.ico" type="image/x-icon" />
+	<link rel="stylesheet" type="text/css" href="/css/dashboard.css" />
+
+</head>
+<style id="compiled-css" type="text/css">
+    td.details-control {
+    background: url('https://raw.githubusercontent.com/DataTables/DataTables/1.10.7/examples/resources/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('https://raw.githubusercontent.com/DataTables/DataTables/1.10.7/examples/resources/details_close.png') no-repeat center center;
+}
+
+    /* EOS */
+  </style>
+<body>
+    <table id="example" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Date</th>
+            <th>Supplier</th>
+            <th>Total</th>
+            <th>Payment</th>
+        </tr>
+    </thead>
+    <tbody>
+      
+    </tbody>
+</table>
+
+    <script type="text/javascript">//<![CDATA[
+
+
+/* Formatting function for row details - modify as you need */
+function format ( d ) {
+    console.log(d.product);
+    var trs='';
+    $.each($(d.product),function(key,value){
+    	trs+='<tr><td>'+value+'</td><td>'+d.price[key]+'</td></tr>';
+    })
+    // `d` is the original data object for the row
+    return '<table class="table table-border table-hover">'+
+           '<thead>'+
+              '<th>Product</th>'+
+            	'<th>Price</th>'+  
+           '</thead><tbody>' +
+           	
+           trs+
+        '</tbody></table>';
+}
+
+$(document).ready(function() {
+    var table = $('#example').DataTable({
+        "ajax": 'https://raw.githubusercontent.com/kshkrao3/JsonFileSample/master/Employees.json',
+        "columns": [
+            {
+                "class":          'details-control',
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": ''
+            },
+            { "data": "date"},
+            { "data": "supplier"},
+            { "data": "total"},
+            { "data": "payment"}
+        ]
+    });
+
+    // Add event listener for opening and closing details
+   $('#example tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+
+        if ( row.child.isShown() ) {
+          // This row is already open - close it
+          row.child.hide();
+          tr.removeClass('shown');
+        }
+        else {
+          // Open this row
+          row.child( format(row.data()) ).show();
+          tr.addClass('shown');
+        }
+    });
+});
+
+
+  //]]></script>
